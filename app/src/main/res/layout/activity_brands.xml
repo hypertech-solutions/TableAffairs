@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:showDividers="middle"
+        android:divider="@drawable/separator_vertical"
+        tools:context=".brands.BrandsActivity"
+        android:background="@color/white">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"
+            android:text="@string/our_brands"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pullToRefreshBrands">
+
+        <ListView
+                android:id="@+id/listViewBrands"
+                tools:listitem="@layout/ticket_brand"
+                android:padding="10dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:layout_width="match_parent"
+                android:divider="@drawable/separator_vertical"
+                android:dividerHeight="8dp"
+                android:layout_height="match_parent">
+
+        </ListView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</LinearLayout>

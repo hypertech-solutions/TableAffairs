@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/bg_contact"
+        tools:context=".contact.ContactUs">
+
+    <ImageView
+            android:contentDescription="@string/contact_table_affairs"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/contactus1"
+            android:id="@+id/imageView3"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"/>
+    <ImageView
+            android:contentDescription="@string/table_affairs_logo"
+            android:layout_below="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="fitEnd"
+            app:srcCompat="@drawable/contactus2"
+            android:id="@+id/imageView4"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"/>
+
+    <ImageView
+            android:contentDescription="@string/table_affairs_brands"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitEnd"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/contactus3"
+            android:id="@+id/imageView5"
+            android:layout_marginBottom="97dp"/>
+</RelativeLayout>

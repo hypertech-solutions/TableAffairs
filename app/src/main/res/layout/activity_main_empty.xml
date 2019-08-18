@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@color/bg_contact"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:context=".MainEmptyActivity">
+
+    <ImageView
+            android:contentDescription="@string/table_affairs_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:srcCompat="@drawable/logo"
+            android:id="@+id/imageView3"/>
+    <TextView
+            android:text="@string/profile"
+            android:layout_width="wrap_content"
+            android:textStyle="italic"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:id="@+id/textView2"/>
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:progressTint="@color/white"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:id="@+id/main_progressBar"/>
+</LinearLayout>

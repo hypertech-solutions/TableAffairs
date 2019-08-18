@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/ic_home_black_24dp"
+                android:title="@string/menu_home"/>
+        <item
+                android:id="@+id/nav_brands"
+                android:icon="@drawable/ic_airplay_black_24dp"
+                android:title="@string/brands"/>
+        <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/settings"/>
+    </group>
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                    android:id="@+id/nav_myprofile"
+                    android:icon="@drawable/ic_account_circle_black_24dp"
+                    android:title="@string/menu_myprofile"/>
+            <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/ic_log_out_new_black_24dp"
+                    android:title="@string/menu_logout"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/text_communicate">
+        <menu>
+            <item
+                    android:id="@+id/nav_share"
+                    android:icon="@drawable/ic_menu_share"
+                    android:title="@string/menu_share"/>
+            <item
+                    android:id="@+id/nav_contactus"
+                    android:icon="@drawable/ic_contact_phone_black_24dp"
+                    android:title="@string/menu_contactus"/>
+            <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_information"
+                    android:title="@string/menu_about"/>
+            <item
+                    android:id="@+id/nav_rateus"
+                    android:icon="@drawable/ic_star_black_24dp"
+                    android:title="@string/menu_rate_us"/>
+        </menu>
+    </item>
+</menu>

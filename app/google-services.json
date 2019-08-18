@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "972638613989",
+    "firebase_url": "https://tableaffairs-994b4.firebaseio.com",
+    "project_id": "tableaffairs-994b4",
+    "storage_bucket": "tableaffairs-994b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972638613989:android:2191f4230ce33fe2",
+        "android_client_info": {
+          "package_name": "com.hypertech.tableaffairs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972638613989-kqdttqfvrc53chdsbrkuk3iqj3f6899b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hypertech.tableaffairs",
+            "certificate_hash": "96c6e5ed8e10cbda88d4010a8f9079409b3de5a6"
+          }
+        },
+        {
+          "client_id": "972638613989-f0eir5kl08i81v4r6h6dh9si5gj4ekfd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBggR0_cPgtCfqUtRcQKoN_8pcplXTT-34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972638613989-f0eir5kl08i81v4r6h6dh9si5gj4ekfd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
