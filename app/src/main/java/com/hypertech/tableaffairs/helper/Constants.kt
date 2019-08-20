@@ -6,11 +6,8 @@ package com.hypertech.tableaffairs.helper
 *Hypertech Solutions, Uganda
 */
 
+const val BUSINESS_NAME = "TABLE AFFAIRS"
 const val USERS = "Users"
-const val USER_ID = "userId"
-const val FULL_NAME = "fullName"
-const val PHONE_NUMBER = "phoneNumber"
-const val EMAIL = "email"
 
 const val PRODUCTS = "Products"
 const val BRANDS = "Brands"
@@ -27,3 +24,10 @@ const val CASH = "Cash"
 const val PAYPAL = "PayPal"
 const val ORDERS = "Orders"
 const val ORDER_ID = "OrderId"
+const val PAYMENT_AMOUNT = "PaymentAmount"
+const val PAYMENT_DETAILS = "PaymentDetails"
+const val PAYPAL_REQUEST_CODE = 4304
+const val PAYMENT_STATUS ="PaymentStatus"
+const val PENDING = "Pending"
+const val PAID = "Paid"
+const val PAYPAL_PAYMENT = "PayPal Payment"

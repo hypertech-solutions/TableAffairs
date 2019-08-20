@@ -103,11 +103,19 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:paddingStart="25dp"
             android:paddingEnd="25dp"
             android:background="@drawable/button_style"
             android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:id="@+id/button_confirmOrder"/>
+    <ProgressBar
+            android:layout_marginTop="10dp"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:id="@+id/verify_progressBar"/>
 
 </LinearLayout>

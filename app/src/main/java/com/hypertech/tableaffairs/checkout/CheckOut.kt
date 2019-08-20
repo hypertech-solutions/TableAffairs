@@ -1,5 +1,6 @@
 package com.hypertech.tableaffairs.checkout
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -15,16 +16,33 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hypertech.tableaffairs.R
 import com.hypertech.tableaffairs.helper.*
+import com.paypal.android.sdk.payments.PayPalConfiguration
+import com.paypal.android.sdk.payments.PayPalService
+import com.paypal.android.sdk.payments.PayPalPayment
+import com.paypal.android.sdk.payments.PaymentActivity
+import java.math.BigDecimal
+
+import android.util.Log
+import com.paypal.android.sdk.payments.PaymentConfirmation
+import java.lang.Exception
 
 class CheckOut : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
     private var db = FirebaseFirestore.getInstance()
-    private var dbHelper:DBHelper? = null
-    private var totalAmount = 0.0
+    private var dbHelper: DBHelper? = null
+    private var orderId: String? = null
+    private var totalAmount:Double = 0.0
+    private var address:String? = null
     private var deliveryMethod = ""
     private var paymentMethod = ""
-    private var userId:String? = null
+    private var userId: String? = null
+    private val productList = ArrayList<HashMap<String, Int>>()
+
+    //Paypal Configuration Object
+    private val paypalConfig = PayPalConfiguration()
+        .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
+        .clientId(PayPalConfig.PAYPAL_CLIENT_ID)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,28 +55,32 @@ class CheckOut : AppCompatActivity() {
         dbHelper = DBHelper(this)
 
         val finalAmount = findViewById<TextView>(R.id.finalAmount)
-        val address = findViewById<TextView>(R.id.tv_address)
+        val tvAddress = findViewById<TextView>(R.id.tv_address)
         val deliveryRadioGroup = findViewById<RadioGroup>(R.id.radioGroupDelivery)
         val paymentRadioGroup = findViewById<RadioGroup>(R.id.radioGroupPayment)
         val buttonConfirm = findViewById<Button>(R.id.button_confirmOrder)
+
+        startPayPalService()
+
+        address = tvAddress.text.toString()
 
         userId = mAuth!!.currentUser?.uid
         val tempCart = dbHelper!!.retrieveTempCart()
 
         if (tempCart.isNotEmpty()) {
 
-            val product = HashMap<String,Int>()
-            val productIdList = ArrayList<HashMap<String, Int>>()
-
+            val product = HashMap<String, Int>()
             for (i in 0 until tempCart.size) {
+
                 product[tempCart[i].itemId] = tempCart[i].qty
-                productIdList.add(product)
+                productList.add(product)
+
                 totalAmount += tempCart[i].qty * tempCart[i].price
             }
 
             finalAmount.text = "TOTAL AMOUNT : $totalAmount"
 
-            deliveryRadioGroup.setOnCheckedChangeListener { radioGroup, radioId ->
+            deliveryRadioGroup.setOnCheckedChangeListener { _, radioId ->
                 when (radioId) {
                     R.id.delivery_normal -> {
                         deliveryMethod = NORMAL
@@ -73,7 +95,7 @@ class CheckOut : AppCompatActivity() {
                 }
             }
 
-            paymentRadioGroup.setOnCheckedChangeListener { radioGroup, radioId ->
+            paymentRadioGroup.setOnCheckedChangeListener { _, radioId ->
                 when (radioId) {
                     R.id.payment_cash -> {
                         paymentMethod = CASH
@@ -87,12 +109,16 @@ class CheckOut : AppCompatActivity() {
             buttonConfirm.setOnClickListener {
 
                 if (deliveryRadioGroup.isNotEmpty() && paymentRadioGroup.isNotEmpty()) {
-                    val orderId = "$userId@${Timestamp.now()}"
+                    orderId = "$userId@${Timestamp.now()}"
 
                     if (paymentMethod == CASH) {
-                        createOrderInDatabase(orderId, productIdList)
+
+                        if (createOrderInDatabase())
+                            loadOrdered(orderId.toString())
+
                     } else if (paymentMethod == PAYPAL) {
-                        loadPayPalPayment()
+                        if (createOrderInDatabase())
+                            loadPayPalPayment()
                     }
 
                 } else {
@@ -116,26 +142,129 @@ class CheckOut : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun createOrderInDatabase(orderId: String, productIdList: ArrayList<HashMap<String, Int>>) {
-        val order = Order(orderId, userId, productIdList, Timestamp.now())
-        db.collection(ORDERS).document(orderId).set(order)
-            .addOnSuccessListener {
-                dbHelper?.deleteTempCart()
-                this.toast("Order placed!")
-                loadOrdered(orderId)
-            }
-            .addOnFailureListener { result ->
-                this.toast(result.message!!)
-            }
+    override fun onDestroy() {
+        stopService(Intent(this, PayPalService::class.java))
+        super.onDestroy()
+    }
+
+    private fun startPayPalService() {
+        // Starting PayPal service
+        val intent = Intent(this, PayPalService::class.java)
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfig)
+        startService(intent)
     }
 
     private fun loadPayPalPayment() {
+        val paymentAmount = totalAmount
 
+        //Creating a paypalpayment
+        val payment = PayPalPayment(
+            BigDecimal.valueOf(paymentAmount), PayPalConfig.DEFAULT_CURRENCY, BUSINESS_NAME,
+            PayPalPayment.PAYMENT_INTENT_SALE
+        )
+
+        //Creating Paypal Payment activity intent
+        val intent = Intent(this, PaymentActivity::class.java)
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, paypalConfig)
+
+        //putting the paypal configuration to the intent
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment)
+
+        //Starting the intent activity for result
+        //the request code will be used on the method onActivityResult
+        startActivityForResult(intent, PAYPAL_REQUEST_CODE)
     }
 
-    private fun loadOrdered(orderId:String) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //If the result is from paypal
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+
+            //If the result is OK i.e. user has not canceled the payment
+            if (resultCode == Activity.RESULT_OK) {
+                //Getting the payment confirmation
+                val confirm: PaymentConfirmation? = data?.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION)
+
+                //if confirmation is not null
+                if (confirm != null) {
+                    val docRef = db.collection(ORDERS).document(orderId.toString())
+                    docRef.update(PAYMENT_STATUS, PAID)
+                        .addOnSuccessListener {
+                            this.toast("Payment process completed successfully")
+                        }
+                        .addOnFailureListener {
+                            this.toast("Payment process completed but not validated in our database : $it")
+                        }
+
+                    try {
+                        //Getting the payment details
+                        val paymentDetails = confirm.toJSONObject().toString(4)
+                        Log.i("PayPal Payment", paymentDetails)
+
+                        //Starting a new activity for the payment details and also putting the payment details with intent
+
+//                        val paymentId = confirm.toJSONObject().getJSONObject("response").getString("id")
+//                        verifyPaymentOnServer(paymentId , confirm)
+
+                        startActivity(Intent(this, ConfirmationActivity::class.java)
+                            .putExtra(ORDER_ID, orderId)
+                            .putExtra(PAYMENT_DETAILS, paymentDetails)
+                            .putExtra(PAYMENT_AMOUNT, totalAmount))
+
+                    }catch (ex:Exception){
+                        Log.e(PAYPAL_PAYMENT, "An extremely unlikely failure occurred: ", ex)
+                    }
+                }
+
+            }else if (resultCode == Activity.RESULT_CANCELED){
+                Log.i(PAYPAL_PAYMENT, "The user canceled.")
+            }else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(PAYPAL_PAYMENT, "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.")
+            }
+        }
+    }
+
+    //Verifying the mobile payment on the server to avoid fraudulent payment
+//
+//    private fun verifyPaymentOnServer(paymentId: String, confirm: PaymentConfirmation) {
+//        verify_progressBar.visibility = View.VISIBLE
+//
+//        try {
+//
+//            val amount = confirm.payment.toJSONObject().getString("amount")
+//            val currency = confirm.payment.toJSONObject().getString("currency_code")
+//            val userID = userId
+//
+//            //TODO: Complete this method
+//
+//        }catch (e:JSONException){
+//            e.printStackTrace()
+//        }
+//        verify_progressBar.visibility = View.GONE
+//
+//    }
+
+    private fun createOrderInDatabase():Boolean {
+        var ordered = false
+        val order = Order(orderId, userId, productList, totalAmount, paymentMethod, deliveryMethod, address, PENDING, Timestamp.now())
+        db.collection(ORDERS).document(orderId.toString()).set(order)
+            .addOnSuccessListener {
+                dbHelper?.deleteTempCart()
+                this.toast("Order placed!")
+                ordered = true
+            }
+            .addOnFailureListener { result ->
+                this.toast("Can't place your order: $result")
+                ordered = false
+            }
+        return ordered
+    }
+
+    private fun loadOrdered(orderId: String) {
         val intent = Intent(this, Ordered::class.java)
         intent.putExtra(ORDER_ID, orderId)
+        intent.putExtra(PAYMENT_AMOUNT, totalAmount)
         startActivity(intent)
     }
 }

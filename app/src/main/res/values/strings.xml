@@ -95,9 +95,12 @@
     <string name="your_order_has_been_placed_successfully_with_order_id">Your order has been placed successfully with
         order id:
     </string>
-    <string name="please_use_it_incase_you_want_to_track_your_ordered_products">Please use it incase you want to track
-        your ordered products
+    <string name="please_use_it_incase_you_want_to_track_your_ordered_products">Please use it in case you want to track
+        your ordered products. \nMake sure to have enough cash upon receiving your delivery.
     </string>
-    <string name="thank_you_for_working_with_table_affairs">Thank you for working with Table Affairs</string>
-    <string name="back_to_home">Back to Home >> </string>
+    <string name="confirm_id_message">Please use it in case you want to track
+        your ordered products.
+    </string>
+    <string name="thank_you_for_working_with_table_affairs">Thank you for shopping with Table Affairs</string>
+    <string name="back_to_home">Back to Home >></string>
 </resources>

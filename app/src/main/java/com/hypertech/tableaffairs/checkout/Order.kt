@@ -10,4 +10,9 @@ import com.google.firebase.Timestamp
 
 data class Order (val orderId:String? = null, val userId:String? = null,
                   val products:ArrayList<HashMap<String, Int>>? = null,
+                  val totalAmount:Double? = null,
+                  val paymentMethod:String? = null,
+                  val deliveryMethod:String? = null,
+                  val address:String? = null,
+                  val PaymentStatus:String? = null,
                   val orderedAt: Timestamp = Timestamp.now())
