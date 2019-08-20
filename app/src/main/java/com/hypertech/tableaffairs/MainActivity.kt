@@ -25,10 +25,10 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hypertech.tableaffairs.account.Login
 import com.hypertech.tableaffairs.brands.BrandsActivity
-import com.hypertech.tableaffairs.cart.ShoppingCart
 import com.hypertech.tableaffairs.contact.AboutUs
 import com.hypertech.tableaffairs.contact.ContactUs
 import com.hypertech.tableaffairs.helper.PRODUCTS
+import com.hypertech.tableaffairs.helper.loadCart
 import com.hypertech.tableaffairs.products.Product
 import com.hypertech.tableaffairs.products.ProductAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -214,11 +214,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 progressBar.visibility = View.GONE
             }
         } catch (e: Exception) {}
-    }
-
-    private fun loadCart(){
-        val intent = Intent(this, ShoppingCart::class.java)
-        startActivity(intent)
     }
 
     private fun shareApp() {

@@ -12,6 +12,7 @@ import com.hypertech.tableaffairs.GlideApp
 import com.hypertech.tableaffairs.R
 import com.hypertech.tableaffairs.cart.TempCart
 import com.hypertech.tableaffairs.helper.DBHelper
+import com.hypertech.tableaffairs.helper.loadCart
 
 /*
 *Created by Fadsoft on 16, August,2019
@@ -19,16 +20,16 @@ import com.hypertech.tableaffairs.helper.DBHelper
 *Hypertech Solutions, Uganda
 */
 
-class ProductAdapter (private var context: Context, private var productList:ArrayList<Product>): BaseAdapter(){
+class ProductAdapter(private var context: Context, private var productList: ArrayList<Product>) : BaseAdapter() {
 
     private var storage = FirebaseStorage.getInstance()
-    val dbHelper = DBHelper(context)
+    private val dbHelper = DBHelper(context)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
 
         var listLayout = convertView
 
-        if (convertView == null){
+        if (convertView == null) {
             val layoutInflater = LayoutInflater.from(context)
             listLayout = layoutInflater.inflate(R.layout.ticket_product, parent, false)
         }
@@ -66,16 +67,25 @@ class ProductAdapter (private var context: Context, private var productList:Arra
 
         productName!!.text = name
         productDesc!!.text = desc
-        productPrice!!.text = "Price: ${price.toString()}"
-        productStock!!.text = "In Stock: ${stock.toString()}"
+        productPrice!!.text = "Price: $price"
+        productStock!!.text = "In Stock: $stock"
 
-        btnAddToCart?.setOnClickListener {
-            val tempCart= TempCart(null, id!!, 1)
-            val result = dbHelper.addItemToTempCart(tempCart)
+        if (stock > 0) {
+            btnAddToCart?.setOnClickListener {
 
-            if (result > 1)
-                Toast.makeText(context, "Item added to cart", Toast.LENGTH_SHORT).show()
-        }
+                val check = dbHelper.checkForItemExistence(id!!)
+                if (check){
+                    Toast.makeText(context, "Item already added to cart!", Toast.LENGTH_SHORT).show()
+                    context.loadCart()
+                }else{
+                    val tempCart = TempCart(null, id, image!!, name!!, price, 1, stock)
+                    val result = dbHelper.addItemToTempCart(tempCart)
+                    if (result > 1)
+                        Toast.makeText(context, "Item added to cart!", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }else
+            btnAddToCart!!.isEnabled = false
 
         return listLayout
     }

@@ -9,15 +9,15 @@
         tools:context=".checkout.CheckOut">
 
     <TextView
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:textSize="20sp"
             android:text="@string/table_affairs_check_out"
             android:layout_gravity="center"
             android:textStyle="bold"
             android:gravity="center"
             android:textColor="@color/white"
-            android:background="@color/colorPrimary"
+            android:background="@color/sandybrown"
             android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -57,20 +57,18 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
         <RadioButton
                 android:text="@string/normal_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/delivery_normal"
-                android:layout_weight="1"/>
+                android:id="@+id/delivery_normal"/>
         <RadioButton
                 android:text="@string/express_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/delivery_express"
-                android:layout_weight="1"/>
+                android:id="@+id/delivery_express"/>
     </RadioGroup>
     <TextView
             android:text="@string/select_payment_method"
@@ -86,20 +84,18 @@
             android:paddingEnd="20dp"
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
         <RadioButton
                 android:text="@string/cash_on_delivery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/payment_cash"
-                android:layout_weight="1"/>
+                android:id="@+id/payment_cash"/>
         <RadioButton
                 android:text="@string/pay_pal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/payment_payPal"
-                android:layout_weight="1"/>
+                android:id="@+id/payment_payPal"/>
     </RadioGroup>
     <Button
             android:text="@string/confirm"
@@ -107,6 +103,8 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:paddingStart="25dp"
+            android:paddingEnd="25dp"
             android:background="@drawable/button_style"
             android:textColor="@color/white"
             android:layout_height="wrap_content"

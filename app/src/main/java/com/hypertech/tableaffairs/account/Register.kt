@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.hypertech.tableaffairs.*
 import com.hypertech.tableaffairs.helper.Helper
 import com.hypertech.tableaffairs.helper.USERS
+import com.hypertech.tableaffairs.helper.loadMainActivity
 import com.hypertech.tableaffairs.helper.toast
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -66,9 +67,7 @@ class Register : AppCompatActivity() {
                     db.collection(USERS).document(userId!!).set(user)
                         .addOnSuccessListener {
                             this.toast("Account created successfully")
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
+                            this.loadMainActivity()
                         }
                         .addOnFailureListener { result ->
                             this.toast(result.message!!)

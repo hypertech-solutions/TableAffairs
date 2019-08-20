@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.hypertech.tableaffairs.MainActivity
 import com.hypertech.tableaffairs.R
+import com.hypertech.tableaffairs.helper.loadMainActivity
 import com.hypertech.tableaffairs.helper.toast
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -50,10 +51,7 @@ class Login : AppCompatActivity() {
                 progressBar!!.visibility = View.GONE
                 login_button.isEnabled = true
                 if (it.isSuccessful){
-
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    this.loadMainActivity()
                 }else{
                     this.toast(it.exception?.message!!)
                 }

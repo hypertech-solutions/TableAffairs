@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/sandybrown"
             android:textSize="25sp"
             android:id="@+id/textView2"/>
     <ProgressBar

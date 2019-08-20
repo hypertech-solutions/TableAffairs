@@ -2,6 +2,7 @@ package com.hypertech.tableaffairs.brands
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -9,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.hypertech.tableaffairs.helper.BRAND_NAME
 import com.hypertech.tableaffairs.helper.PRODUCTS
 import com.hypertech.tableaffairs.R
+import com.hypertech.tableaffairs.helper.loadCart
 import com.hypertech.tableaffairs.products.Product
 import com.hypertech.tableaffairs.products.ProductAdapter
 import kotlinx.android.synthetic.main.activity_brand.*
@@ -46,10 +48,21 @@ class BrandActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_brands, menu)
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if (item.itemId == android.R.id.home)
-            finish()
+        when(item.itemId){
+            android.R.id.home ->
+                finish()
+            R.id.brand_cart -> {
+                this.loadCart()
+            }
+        }
 
         return super.onOptionsItemSelected(item)
     }

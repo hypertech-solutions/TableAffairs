@@ -7,5 +7,5 @@ package com.hypertech.tableaffairs.products
 */
 
 data class Product(val brand:String? = null, val id:String? = null, val image:String? = null,
-                   val name:String? = null, val desc:String? = null, val price:Int = 0,
+                   val name:String? = null, val desc:String? = null, val price:Double = 0.0,
                    val stock:Int = 0)

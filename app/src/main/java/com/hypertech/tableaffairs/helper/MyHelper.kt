@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.hypertech.tableaffairs.MainActivity
+import com.hypertech.tableaffairs.cart.ShoppingCart
 import java.util.regex.Pattern
 
 /*
@@ -51,6 +52,18 @@ class Helper {
 
     }
 
+}
+
+fun Context.loadCart(){
+    val intent = Intent(this, ShoppingCart::class.java)
+    startActivity(intent)
+}
+
+fun Context.loadMainActivity(){
+    val intent = Intent(this, MainActivity::class.java)
+        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
+    (this as Activity).finish()
 }
 
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()

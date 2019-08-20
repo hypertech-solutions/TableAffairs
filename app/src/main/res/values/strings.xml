@@ -40,7 +40,8 @@
     <string name="increase_quantity">Increase Quantity</string>
     <string name="you_have_no_items_in_the_cart">You have no items in the cart</string>
     <string name="proceed_to_checkout">PROCEED TO CHECKOUT</string>
-    <string name="setTotal">TOTAL : %1$.1f</string>
+    <string name="setPrice">Price: %1$f</string>
+    <string name="setTotal">TOTAL : %1$f USD</string>
     <string name="add_items_in_cart">Add Items in cart</string>
     <string name="our_brands">Our Brands</string>
     <string name="about_table_affairs">About Table Affairs</string>
@@ -90,4 +91,13 @@
     <string name="pay_pal">Pay Pal</string>
     <string name="confirm">Confirm</string>
     <string name="final_amount_0_0_usd">FINAL AMOUNT : 0.0 USD</string>
+    <string name="your_shopping_cart">Your Shopping Cart Items</string>
+    <string name="your_order_has_been_placed_successfully_with_order_id">Your order has been placed successfully with
+        order id:
+    </string>
+    <string name="please_use_it_incase_you_want_to_track_your_ordered_products">Please use it incase you want to track
+        your ordered products
+    </string>
+    <string name="thank_you_for_working_with_table_affairs">Thank you for working with Table Affairs</string>
+    <string name="back_to_home">Back to Home >> </string>
 </resources>
