@@ -24,6 +24,8 @@
     <string name="brand_name">Brand Name</string>
     <string name="brand_description">Brand Description</string>
     <string name="brand_logo">Brand Logo</string>
+    <string name="brand_with_products">Products in %1$s</string>
+    <string name="brand_no_products">No products in %1$s</string>
     <string name="product_image">Product Image</string>
     <string name="product_name">Product Name</string>
     <string name="product_description">Product Description</string>
@@ -38,10 +40,12 @@
     <string name="_1">1</string>
     <string name="decrease_quantity">Decrease Quantity</string>
     <string name="increase_quantity">Increase Quantity</string>
+    <string name="set_netPrice">Net Price: $%1$.2f</string>
     <string name="you_have_no_items_in_the_cart">You have no items in the cart</string>
-    <string name="proceed_to_checkout">PROCEED TO CHECKOUT</string>
-    <string name="setPrice">Price: %1$f</string>
-    <string name="setTotal">TOTAL : %1$f USD</string>
+    <string name="proceed_to_checkout">CHECKOUT</string>
+    <string name="setPrice">Price: %1$.2f</string>
+    <string name="set_inStock">In Stock: %1$d</string>
+    <string name="setTotal">TOTAL AMOUNT : %1$.2f USD</string>
     <string name="add_items_in_cart">Add Items in cart</string>
     <string name="our_brands">Our Brands</string>
     <string name="about_table_affairs">About Table Affairs</string>
@@ -96,11 +100,25 @@
         order id:
     </string>
     <string name="please_use_it_incase_you_want_to_track_your_ordered_products">Please use it in case you want to track
-        your ordered products. \nMake sure to have enough cash upon receiving your delivery.
+        your ordered products. \n\nMake sure to have enough cash upon receiving your delivery.
     </string>
     <string name="confirm_id_message">Please use it in case you want to track
         your ordered products.
     </string>
     <string name="thank_you_for_working_with_table_affairs">Thank you for shopping with Table Affairs</string>
     <string name="back_to_home">Back to Home >></string>
+    <string name="my_orders">My Orders</string>
+    <string name="set_greetings">Hello %1$s</string>
+    <string name="set_payment">%1$.2f USD</string>
+    <string name="set_orderTotalAmount">ORDER TOTAL AMOUNT : %1$.2f USD</string>
+    <string name="no_orders">No Orders made yet</string>
+    <string name="order_at">Ordered At :</string>
+    <string name="order_id">Order Id :</string>
+    <string name="products">Products :</string>
+    <string name="address">Address :</string>
+    <string name="amount">Amount :</string>
+    <string name="payment_method">Payment method :</string>
+    <string name="delivery_method">Delivery Method :</string>
+    <string name="payment_status">Payment Status :</string>
+    <string name="delivery_status">Delivery Status :</string>
 </resources>

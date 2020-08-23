@@ -24,9 +24,9 @@ class Ordered : AppCompatActivity() {
         val totalAmount = bundle?.getDouble(PAYMENT_AMOUNT)
         val userName = mAuth!!.currentUser?.displayName
 
-        tv_greetings.text = "Hello $userName"
+        tv_greetings.text = getString(R.string.set_greetings, userName)
         tv_orderId.text = orderId
-        tv_totalAmount.text = "ORDER TOTAL AMOUNT : $totalAmount"
+        tv_totalAmount.text = getString(R.string.set_orderTotalAmount, totalAmount)
 
         tv_backToHome.setOnClickListener {
             this.loadMainActivity()

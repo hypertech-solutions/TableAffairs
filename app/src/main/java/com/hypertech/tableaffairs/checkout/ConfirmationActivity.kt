@@ -28,7 +28,7 @@ class ConfirmationActivity : AppCompatActivity() {
         try {
             val orderId = intent.getStringExtra(ORDER_ID)
             val jsonDetails = JSONObject(intent.getStringExtra(PAYMENT_DETAILS))
-            val paymentAmount = intent.getStringExtra(PAYMENT_AMOUNT)
+            val paymentAmount = intent.getDoubleExtra(PAYMENT_AMOUNT, 0.00)
 
             //Displaying payment details
             showDetails(orderId, jsonDetails.getJSONObject("response"), paymentAmount)
@@ -46,7 +46,7 @@ class ConfirmationActivity : AppCompatActivity() {
     }
 
     @Throws(JSONException::class)
-    private fun showDetails(orderId: String?,jsonDetails: JSONObject, paymentAmount: String?) {
+    private fun showDetails(orderId: String?,jsonDetails: JSONObject, paymentAmount: Double?) {
         //Views
         val textViewId = findViewById<View>(R.id.paymentId) as TextView
         val textViewStatus = findViewById<View>(R.id.paymentStatus) as TextView
@@ -54,11 +54,12 @@ class ConfirmationActivity : AppCompatActivity() {
 
         val userName = mAuth!!.currentUser?.displayName
 
-        tv_confirmGreetings.text = "Hello $userName"
+        tv_confirmGreetings.text = getString(R.string.set_greetings, userName)
         tv_confirmOrderId.text = orderId
         //Showing the details from json object
+        textViewAmount.text = getString(R.string.set_payment, paymentAmount)
         textViewId.text = jsonDetails.getString("id")
         textViewStatus.text = jsonDetails.getString("state")
-        textViewAmount.text = "$paymentAmount USD"
+
     }
 }

@@ -6,6 +6,15 @@ package com.hypertech.tableaffairs.cart
 *Hypertech Solutions, Uganda
 */
 
-class Cart (val image:String, val name:String, val price:Int, val quantity:Int)
+class Cart (val image:String,
+            val name:String,
+            val price:Int,
+            val quantity:Int)
 
-class TempCart(val id: Int?, val itemId:String, val itemImage:String, val itemName:String, val price:Double, val qty:Int, val stock:Int)
+class TempCart(val id: Int?,
+               val itemId:String,
+               val itemImage:String,
+               val itemName:String,
+               val price:Double,
+               val qty:Int,
+               val stock:Int)

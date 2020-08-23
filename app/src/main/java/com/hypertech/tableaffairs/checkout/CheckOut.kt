@@ -5,12 +5,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.RadioGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.isEmpty
-import androidx.core.view.isNotEmpty
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,8 +17,13 @@ import com.paypal.android.sdk.payments.PaymentActivity
 import java.math.BigDecimal
 
 import android.util.Log
+import android.view.View
 import com.paypal.android.sdk.payments.PaymentConfirmation
+import kotlinx.android.synthetic.main.activity_check_out.*
 import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class CheckOut : AppCompatActivity() {
 
@@ -32,12 +31,13 @@ class CheckOut : AppCompatActivity() {
     private var db = FirebaseFirestore.getInstance()
     private var dbHelper: DBHelper? = null
     private var orderId: String? = null
-    private var totalAmount:Double = 0.0
-    private var address:String? = null
-    private var deliveryMethod = ""
-    private var paymentMethod = ""
+    private var finalAmount:Double = 0.0
+    private var deliveryTax:Double = 0.0
+    private var address:String = ""
+    private var deliveryMethod:String = ""
+    private var paymentMethod:String = ""
     private var userId: String? = null
-    private val productList = ArrayList<HashMap<String, Int>>()
+    private val productList = ArrayList<HashMap<String, Any>>()
 
     //Paypal Configuration Object
     private val paypalConfig = PayPalConfiguration()
@@ -46,6 +46,7 @@ class CheckOut : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_check_out)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -54,46 +55,50 @@ class CheckOut : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         dbHelper = DBHelper(this)
 
-        val finalAmount = findViewById<TextView>(R.id.finalAmount)
-        val tvAddress = findViewById<TextView>(R.id.tv_address)
-        val deliveryRadioGroup = findViewById<RadioGroup>(R.id.radioGroupDelivery)
-        val paymentRadioGroup = findViewById<RadioGroup>(R.id.radioGroupPayment)
-        val buttonConfirm = findViewById<Button>(R.id.button_confirmOrder)
+        val tvFinalAmount = tv_finalAmount
+        val tvAddress = tv_address
+        val deliveryRadioGroup = radioGroupDelivery
+        val paymentRadioGroup = radioGroupPayment
+        val buttonConfirm = button_confirmOrder
 
         startPayPalService()
-
-        address = tvAddress.text.toString()
 
         userId = mAuth!!.currentUser?.uid
         val tempCart = dbHelper!!.retrieveTempCart()
 
         if (tempCart.isNotEmpty()) {
 
-            val product = HashMap<String, Int>()
+            var totalAmount = 0.0
             for (i in 0 until tempCart.size) {
-
-                product[tempCart[i].itemId] = tempCart[i].qty
-                productList.add(product)
-
+                val product = HashMap<String, Any>()
+                product["productId"] = tempCart[i].itemId
+                product["quantity"] = tempCart[i].qty
                 totalAmount += tempCart[i].qty * tempCart[i].price
+
+                productList.add(product)
             }
 
-            finalAmount.text = "TOTAL AMOUNT : $totalAmount"
+
+            tvFinalAmount.text = getString(R.string.setTotal, totalAmount)
 
             deliveryRadioGroup.setOnCheckedChangeListener { _, radioId ->
+                finalAmount = 0.0
                 when (radioId) {
                     R.id.delivery_normal -> {
                         deliveryMethod = NORMAL
-                        totalAmount += 2
-                        finalAmount.text = "TOTAL AMOUNT : $totalAmount"
+                        deliveryTax = 2.0
                     }
                     R.id.delivery_express -> {
                         deliveryMethod = EXPRESS
-                        totalAmount += 2
-                        finalAmount.text = "TOTAL AMOUNT : $totalAmount"
+                        deliveryTax = 3.0
                     }
                 }
+
+                finalAmount = totalAmount + deliveryTax
+                tvFinalAmount.text = getString(R.string.setTotal, finalAmount)
             }
+
+
 
             paymentRadioGroup.setOnCheckedChangeListener { _, radioId ->
                 when (radioId) {
@@ -108,27 +113,43 @@ class CheckOut : AppCompatActivity() {
 
             buttonConfirm.setOnClickListener {
 
-                if (deliveryRadioGroup.isNotEmpty() && paymentRadioGroup.isNotEmpty()) {
-                    orderId = "$userId@${Timestamp.now()}"
+                address = tvAddress.text.toString()
 
-                    if (paymentMethod == CASH) {
+                if (address.isEmpty()){
+                    tvAddress.error = "Please enter your address"
+                    return@setOnClickListener
+                }
 
-                        if (createOrderInDatabase())
-                            loadOrdered(orderId.toString())
+                if (address.length < 5){
+                    tvAddress.error = "Enter valid address"
+                    return@setOnClickListener
+                }
 
-                    } else if (paymentMethod == PAYPAL) {
-                        if (createOrderInDatabase())
-                            loadPayPalPayment()
-                    }
+                tvAddress.error = null
 
-                } else {
-                    if (deliveryRadioGroup.isEmpty()) {
-                        deliveryRadioGroup.requestFocus()
-                        Toast.makeText(this, "Please choose your preferred delivery method", Toast.LENGTH_LONG).show()
-                    } else if (paymentRadioGroup.isEmpty()) {
-                        paymentRadioGroup.requestFocus()
-                        Toast.makeText(this, "Please choose your preferred payment method", Toast.LENGTH_LONG).show()
-                    }
+                if (deliveryMethod.isEmpty()) {
+                    deliveryRadioGroup.requestFocus()
+                    this.toast("Please choose your preferred delivery method")
+                    return@setOnClickListener
+                }
+
+                if (paymentMethod.isEmpty()) {
+                    paymentRadioGroup.requestFocus()
+                    this.toast("Please choose your preferred payment method")
+                    return@setOnClickListener
+                }
+
+                if (address.isNotEmpty() && deliveryMethod.isNotEmpty() && paymentMethod.isNotEmpty()) {
+
+                    button_confirmOrder.isEnabled = false
+                    verify_progressBar.visibility = View.VISIBLE
+
+                    val dateNow = Calendar.getInstance().time
+                    val formattedDate = Helper.formatDate(dateNow)
+                    orderId = "$userId@$formattedDate"
+
+                    if (paymentMethod == CASH) createCashOrderInDatabase() else if (paymentMethod == PAYPAL) createPayPalOrderInDatabase()
+
                 }
             }
         }
@@ -154,8 +175,37 @@ class CheckOut : AppCompatActivity() {
         startService(intent)
     }
 
+    private fun createCashOrderInDatabase(){
+        val order = Order(orderId, userId, productList, finalAmount, paymentMethod, deliveryMethod, address, PENDING, PENDING, Timestamp.now())
+        db.collection(ORDERS).document(orderId.toString()).set(order)
+            .addOnSuccessListener {
+                this.toast("Order placed!")
+                loadOrdered(orderId.toString())
+            }
+            .addOnFailureListener { result ->
+                verify_progressBar.visibility = View.GONE
+                button_confirmOrder.isEnabled = true
+                this.toast("Can't place your order: ${result.message}")
+
+            }
+    }
+
+    private fun createPayPalOrderInDatabase(){
+        val order = Order(orderId, userId, productList, finalAmount, paymentMethod, deliveryMethod, address, PENDING, PENDING, Timestamp.now())
+        db.collection(ORDERS).document(orderId.toString()).set(order)
+            .addOnSuccessListener {
+                this.toast("Order placed!")
+                loadPayPalPayment()
+            }
+            .addOnFailureListener { result ->
+                verify_progressBar.visibility = View.GONE
+                button_confirmOrder.isEnabled = true
+                this.toast("Can't place your order: ${result.message}")
+            }
+    }
+
     private fun loadPayPalPayment() {
-        val paymentAmount = totalAmount
+        val paymentAmount = finalAmount
 
         //Creating a paypalpayment
         val payment = PayPalPayment(
@@ -194,7 +244,7 @@ class CheckOut : AppCompatActivity() {
                             this.toast("Payment process completed successfully")
                         }
                         .addOnFailureListener {
-                            this.toast("Payment process completed but not validated in our database : $it")
+                            this.toast("Payment process completed but not validated in our database : ${it.message}")
                         }
 
                     try {
@@ -206,11 +256,13 @@ class CheckOut : AppCompatActivity() {
 
 //                        val paymentId = confirm.toJSONObject().getJSONObject("response").getString("id")
 //                        verifyPaymentOnServer(paymentId , confirm)
+                        val intent = Intent(this, ConfirmationActivity::class.java)
+                        intent.putExtra(ORDER_ID, orderId)
+                        intent.putExtra(PAYMENT_DETAILS, paymentDetails)
+                        intent.putExtra(PAYMENT_AMOUNT, finalAmount)
+                        dbHelper?.deleteTempCart()
+                        startActivity(intent)
 
-                        startActivity(Intent(this, ConfirmationActivity::class.java)
-                            .putExtra(ORDER_ID, orderId)
-                            .putExtra(PAYMENT_DETAILS, paymentDetails)
-                            .putExtra(PAYMENT_AMOUNT, totalAmount))
 
                     }catch (ex:Exception){
                         Log.e(PAYPAL_PAYMENT, "An extremely unlikely failure occurred: ", ex)
@@ -223,6 +275,9 @@ class CheckOut : AppCompatActivity() {
                 Log.i(PAYPAL_PAYMENT, "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.")
             }
         }
+
+        verify_progressBar.visibility = View.GONE
+        button_confirmOrder.isEnabled = true
     }
 
     //Verifying the mobile payment on the server to avoid fraudulent payment
@@ -245,26 +300,11 @@ class CheckOut : AppCompatActivity() {
 //
 //    }
 
-    private fun createOrderInDatabase():Boolean {
-        var ordered = false
-        val order = Order(orderId, userId, productList, totalAmount, paymentMethod, deliveryMethod, address, PENDING, Timestamp.now())
-        db.collection(ORDERS).document(orderId.toString()).set(order)
-            .addOnSuccessListener {
-                dbHelper?.deleteTempCart()
-                this.toast("Order placed!")
-                ordered = true
-            }
-            .addOnFailureListener { result ->
-                this.toast("Can't place your order: $result")
-                ordered = false
-            }
-        return ordered
-    }
-
     private fun loadOrdered(orderId: String) {
         val intent = Intent(this, Ordered::class.java)
         intent.putExtra(ORDER_ID, orderId)
-        intent.putExtra(PAYMENT_AMOUNT, totalAmount)
+        intent.putExtra(PAYMENT_AMOUNT, finalAmount)
+        dbHelper?.deleteTempCart()
         startActivity(intent)
     }
 }

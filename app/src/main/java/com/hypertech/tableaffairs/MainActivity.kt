@@ -24,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hypertech.tableaffairs.account.Login
+import com.hypertech.tableaffairs.account.MyOrders
 import com.hypertech.tableaffairs.brands.BrandsActivity
 import com.hypertech.tableaffairs.contact.AboutUs
 import com.hypertech.tableaffairs.contact.ContactUs
@@ -84,10 +85,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         userDetails() //Load User Details
 
-        loadProducts() //Load all brands with their data
+        loadProducts() //Load all products with their data
 
         pullToRefreshProducts.setOnRefreshListener {
-            loadProducts() //Load all universities with their data
+            loadProducts() //Load all products with their data
             productAdapter?.notifyDataSetChanged()
             pullToRefreshProducts.isRefreshing = false
 
@@ -147,6 +148,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, BrandsActivity::class.java)
                 startActivity(intent)
             }
+            R.id.nav_myorders -> {
+                val intent = Intent(this, MyOrders::class.java)
+                startActivity(intent)
+            }
             R.id.nav_settings -> {
             }
             R.id.nav_myprofile -> {
@@ -192,11 +197,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun loadProducts() {
         try {
-
             val docRef = db.collection(PRODUCTS)
-
             docRef.get().addOnSuccessListener {
                 if (!it.isEmpty) {
+                    productsTitle.text = getString(R.string.our_products)
                     val productList = ArrayList<Product>()
 
                     for (i in it.documents) {

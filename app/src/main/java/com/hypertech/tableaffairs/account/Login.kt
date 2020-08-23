@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.hypertech.tableaffairs.MainActivity
 import com.hypertech.tableaffairs.R
 import com.hypertech.tableaffairs.helper.loadMainActivity
 import com.hypertech.tableaffairs.helper.toast

@@ -40,9 +40,7 @@ class BrandsActivity : AppCompatActivity() {
 
     private fun loadBrands() {
         try {
-
             val docRef = db.collection(BRANDS)
-
             docRef.get().addOnSuccessListener {
                 if (!it.isEmpty) {
 

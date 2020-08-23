@@ -69,13 +69,12 @@ class BrandActivity : AppCompatActivity() {
 
     private fun loadProducts() {
         try {
-
             val docRef = db.collection(PRODUCTS).whereEqualTo(BRAND_NAME, name)
 
             docRef.get().addOnSuccessListener {
                 if (!it.isEmpty) {
 
-                    brandProductTitle.text = "Products in $name"
+                    brandProductTitle.text = getString(R.string.brand_with_products, name)
                     val productList = ArrayList<Product>()
 
                     for (i in it.documents) {
@@ -88,7 +87,7 @@ class BrandActivity : AppCompatActivity() {
                     val productListView = listViewBrandProducts
                     productListView.adapter = productAdapter
                 }else
-                    brandProductTitle.text = "No Products in $name"
+                    brandProductTitle.text = getString(R.string.brand_no_products, name)
 
                 progressBar.visibility = View.GONE
             }

@@ -8,11 +8,13 @@ import com.google.firebase.Timestamp
 *Hypertech Solutions, Uganda
 */
 
-data class Order (val orderId:String? = null, val userId:String? = null,
-                  val products:ArrayList<HashMap<String, Int>>? = null,
-                  val totalAmount:Double? = null,
+data class Order (val orderId:String? = null,
+                  val userId:String? = null,
+                  val products:ArrayList<HashMap<String, Any>>? = null,
+                  val paymentAmount:Double? = null,
                   val paymentMethod:String? = null,
                   val deliveryMethod:String? = null,
                   val address:String? = null,
-                  val PaymentStatus:String? = null,
+                  val paymentStatus:String? = null,
+                  val deliveryStatus:String? = null,
                   val orderedAt: Timestamp = Timestamp.now())

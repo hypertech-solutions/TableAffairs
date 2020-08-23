@@ -68,38 +68,38 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         return false
     }
 
-    fun retrieveQuantity(itemId:String):Int{
-
-        val columns = arrayOf(COLUMN_ITEM_QTY)
-        val db = this.readableDatabase
-
-        var quantity = 1
-
-        // selection criteria
-        val selection = "$COLUMN_ITEM_ID = ?"
-
-        // selection argument
-        val selectionArgs = arrayOf(itemId)
-
-        val cursor = db.query(
-            TABLE_CART, //Table to query
-            columns,        //columns to return
-            selection,      //columns for the WHERE clause
-            selectionArgs,  //The values for the WHERE clause
-            null,  //group the rows
-            null,   //filter by row groups
-            null)  //The sort order
-
-        if (cursor.moveToFirst()) {
-            do {
-                quantity = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_QTY)).toInt()
-            } while (cursor.moveToNext())
-        }
-        cursor.close()
-        db.close()
-
-        return quantity
-    }
+//    fun retrieveQuantity(itemId:String):Int{
+//
+//        val columns = arrayOf(COLUMN_ITEM_QTY)
+//        val db = this.readableDatabase
+//
+//        var quantity = 1
+//
+//        // selection criteria
+//        val selection = "$COLUMN_ITEM_ID = ?"
+//
+//        // selection argument
+//        val selectionArgs = arrayOf(itemId)
+//
+//        val cursor = db.query(
+//            TABLE_CART, //Table to query
+//            columns,        //columns to return
+//            selection,      //columns for the WHERE clause
+//            selectionArgs,  //The values for the WHERE clause
+//            null,  //group the rows
+//            null,   //filter by row groups
+//            null)  //The sort order
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                quantity = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM_QTY)).toInt()
+//            } while (cursor.moveToNext())
+//        }
+//        cursor.close()
+//        db.close()
+//
+//        return quantity
+//    }
 
     fun addItemToTempCart(tempCart: TempCart):Int{
 
@@ -185,8 +185,7 @@ class DBHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         val db = this.writableDatabase
         val result:Int
 
-        result = db.delete(TABLE_CART, "$COLUMN_CART_ID = ?",
-            arrayOf("%"))
+        result = db.delete(TABLE_CART, "1", null)
         db.close()
 
         return result

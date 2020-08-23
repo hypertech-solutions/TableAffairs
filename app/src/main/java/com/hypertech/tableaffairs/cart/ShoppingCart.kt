@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.storage.FirebaseStorage
@@ -20,6 +19,8 @@ import com.hypertech.tableaffairs.R
 import com.hypertech.tableaffairs.checkout.CheckOut
 import com.hypertech.tableaffairs.helper.DBHelper
 import com.hypertech.tableaffairs.helper.loadMainActivity
+import com.hypertech.tableaffairs.helper.toast
+
 import kotlinx.android.synthetic.main.activity_shopping_cart.*
 
 class ShoppingCart : AppCompatActivity() {
@@ -70,13 +71,14 @@ class ShoppingCart : AppCompatActivity() {
             layoutBottom.visibility = View.VISIBLE
 
             val cartAdapter = CartAdapter(this, tempCart)
+
             listViewCartItems.adapter = cartAdapter
 
-            var totalAmount = 0.0
-            for (i in 0 until tempCart.size){
-                totalAmount += tempCart[i].qty * tempCart[i].price
-            }
-            tv_price.text = "TOTAL : $totalAmount"
+//            var totalAmount = 0.0
+//            for (i in 0 until tempCart.size){
+//                totalAmount += tempCart[i].qty * tempCart[i].price
+//            }
+//            tv_price.text = "TOTAL : $totalAmount"
 
             btn_checkOut.setOnClickListener {
 
@@ -107,7 +109,7 @@ class ShoppingCart : AppCompatActivity() {
 
             val cartItem = tempCartList[position]
 
-            val cartId = cartItem.id
+//            val cartId = cartItem.id
             val itemId = cartItem.itemId
             val itemImage = cartItem.itemImage
             val itemName = cartItem.itemName
@@ -141,15 +143,16 @@ class ShoppingCart : AppCompatActivity() {
             cartItemPrice!!.text = price.toString()
             cartItemQuantity!!.text = quantity.toString()
 
+
             removeFromCart?.setOnClickListener {
                 dbHelper.deleteItemTempCart(cartItem)
                 loadCartData()
-                Toast.makeText(context, "Product removed", Toast.LENGTH_LONG).show()
+                context.toast("Product removed")
 
             }
 
             var netAmount = price *cartItemQuantity.text.toString().toInt()
-            netPrice!!.text = "Net Price: $netAmount"
+            netPrice!!.text = listLayout?.context!!.getString(R.string.set_netPrice, netAmount)
 
             increaseQuantity?.setOnClickListener {
                 if (cartItemQuantity.text.toString().toInt() < stock){
@@ -159,12 +162,12 @@ class ShoppingCart : AppCompatActivity() {
                     if (result > 0){
                         cartItemQuantity.text = qty.toString()
                         netAmount = price *cartItemQuantity.text.toString().toInt()
-                        netPrice.text = "Net Price: $netAmount"
-                        notifyDataSetChanged()
+                        netPrice.text = listLayout.context!!.getString(R.string.set_netPrice, netAmount)
+//                        notifyDataSetChanged()
                     }
 
                 }else{
-                    Toast.makeText(context, "Can't exceed what is in stock!!", Toast.LENGTH_LONG).show()
+                    context.toast("Can't exceed what is in stock!!")
                 }
 
             }
@@ -177,8 +180,8 @@ class ShoppingCart : AppCompatActivity() {
                     if (result > 0){
                         cartItemQuantity.text = qty.toString()
                         netAmount = price *cartItemQuantity.text.toString().toInt()
-                        netPrice.text = "Net Price: $netAmount"
-                        notifyDataSetChanged()
+                        netPrice.text = listLayout.context!!.getString(R.string.set_netPrice, netAmount)
+//                        notifyDataSetChanged()
                     }
                 }
 

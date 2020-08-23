@@ -36,7 +36,7 @@ class BrandAdapter (private var context: Context, private var brandList:ArrayLis
 
         val brand = brandList[position]
 
-        val id = brand.id
+//        val id = brand.id
         val image = brand.image
         val name = brand.name
         val desc = brand.desc

@@ -13,6 +13,7 @@ import com.hypertech.tableaffairs.R
 import com.hypertech.tableaffairs.cart.TempCart
 import com.hypertech.tableaffairs.helper.DBHelper
 import com.hypertech.tableaffairs.helper.loadCart
+import com.hypertech.tableaffairs.helper.toast
 
 /*
 *Created by Fadsoft on 16, August,2019
@@ -36,7 +37,7 @@ class ProductAdapter(private var context: Context, private var productList: Arra
 
         val product = productList[position]
 
-        val brand = product.brand
+//        val brand = product.brand
         val id = product.id
         val image = product.image
         val name = product.name
@@ -67,25 +68,28 @@ class ProductAdapter(private var context: Context, private var productList: Arra
 
         productName!!.text = name
         productDesc!!.text = desc
-        productPrice!!.text = "Price: $price"
-        productStock!!.text = "In Stock: $stock"
+        productPrice!!.text = listLayout?.context!!.getString(R.string.setPrice, price)
+        productStock!!.text = listLayout.context!!.getString(R.string.set_inStock, stock)
 
         if (stock > 0) {
             btnAddToCart?.setOnClickListener {
 
                 val check = dbHelper.checkForItemExistence(id!!)
                 if (check){
-                    Toast.makeText(context, "Item already added to cart!", Toast.LENGTH_SHORT).show()
+                    context.toast("Item already added to cart!")
                     context.loadCart()
                 }else{
                     val tempCart = TempCart(null, id, image!!, name!!, price, 1, stock)
                     val result = dbHelper.addItemToTempCart(tempCart)
                     if (result > 1)
-                        Toast.makeText(context, "Item added to cart!", Toast.LENGTH_SHORT).show()
+                        context.toast("Item added to cart!")
                 }
             }
-        }else
-            btnAddToCart!!.isEnabled = false
+        }else{
+            btnAddToCart!!.setBackgroundColor(listLayout.context.resources.getColor(R.color.gray))
+            btnAddToCart.isEnabled = false
+        }
+
 
         return listLayout
     }

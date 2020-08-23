@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.hypertech.tableaffairs.MainActivity
 import com.hypertech.tableaffairs.cart.ShoppingCart
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
 
 /*
@@ -45,10 +47,12 @@ class Helper {
             return valid
         }
 
-        fun Context.hideKeyboardFrom(view: View) {
-            val imm = this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-        }
+        fun formatDate(date:Date):String = SimpleDateFormat("yyyy.MM.dd.HHmmss.SSS", Locale.getDefault()).format(date)
+
+//        fun Context.hideKeyboardFrom(view: View) {
+//            val imm = this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+//            imm.hideSoftInputFromWindow(view.windowToken, WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+//        }
 
     }
 
@@ -66,4 +70,4 @@ fun Context.loadMainActivity(){
     (this as Activity).finish()
 }
 
-fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
